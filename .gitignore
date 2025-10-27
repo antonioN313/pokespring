@@ -31,3 +31,22 @@ build/
 
 ### VS Code ###
 .vscode/
+
+docs/*.Identifier
+pom.xml~
+src/main/java/com/antonio/pokespring/PokemonApplication.java~
+src/main/java/com/antonio/pokespring/config/WebClientConfig.java~
+src/main/java/com/antonio/pokespring/controller/PokemonController.java~
+src/main/java/com/antonio/pokespring/controller/advice/GlobalExceptionHandler.java~
+src/main/java/com/antonio/pokespring/exception/PokeApiException.java~
+src/main/java/com/antonio/pokespring/exception/PokemonNotFoundException.java~
+src/main/java/com/antonio/pokespring/model/Pokemon.java~
+src/main/java/com/antonio/pokespring/model/dto/FavoriteRequestDTO.java~
+src/main/java/com/antonio/pokespring/model/dto/PokemonPageDTO.java~
+src/main/java/com/antonio/pokespring/model/dto/PokemonResponseDTO.java~
+src/main/java/com/antonio/pokespring/model/pokeapi/AbilityInfo.java~
+src/main/java/com/antonio/pokespring/model/pokeapi/PokeApiResponse.java~
+src/main/java/com/antonio/pokespring/model/pokeapi/TypeInfo.java~
+src/main/java/com/antonio/pokespring/repository/PokemonRepository.java~
+src/main/java/com/antonio/pokespring/service/PokeApiService.java~
+src/main/java/com/antonio/pokespring/service/PokemonService.java~
