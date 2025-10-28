@@ -21,7 +21,7 @@ public class PokemonController {
     
     @PostMapping("/cache/{nameOrId}")
     public ResponseEntity<PokemonResponseDTO> cacheOrUpdatePokemon(
-            @PathVariable String nameOrId) {
+            @PathVariable @NotBlank(message = "O nameOrId não pode estar vazio") String nameOrId) {
         PokemonResponseDTO result = service.cacheOrUpdatePokemon(nameOrId);
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
@@ -54,9 +54,17 @@ public class PokemonController {
     
     @PatchMapping("/{idLocal}/favorite")
     public ResponseEntity<PokemonResponseDTO> updateFavorite(
-            @PathVariable Long idLocal,
-            @RequestBody FavoriteRequestDTO request) {
+            @PathVariable @Positive(message = "O ID deve ser positivo") Long idLocal,
+            @RequestBody @Valid FavoriteRequestDTO request) {
         PokemonResponseDTO result = service.updateFavorite(idLocal, request);
         return ResponseEntity.ok(result);
     }
+
+    @DeleteMapping("/cache")
+public ResponseEntity<Map<String, String>> clearCache() {
+    service.clearAllCaches();
+    Map<String, String> response = new HashMap<>();
+    response.put("message", "Todos os caches foram limpos com sucesso");
+    return ResponseEntity.ok(response);
+}
 }

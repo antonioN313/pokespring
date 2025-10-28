@@ -27,6 +27,7 @@ public class PokemonService {
     private final PokeApiService pokeApiService;
     
     @Transactional
+    @CacheEvict(value = {"pokemons", "pokemonById", "pokemonsByType"}, allEntries = true)
     public PokemonResponseDTO cacheOrUpdatePokemon(String nameOrId) {
         log.info("Processando cache/atualização para: {}", nameOrId);
         
@@ -65,28 +66,33 @@ public class PokemonService {
         return mapToResponseDTO(saved);
     }
     
+    @Cacheable(value = "pokemons", key = "#pageable.pageNumber + '-' + #pageable.pageSize")
     public Page<PokemonPageDTO> listPokemon(Pageable pageable) {
+        log.info("Buscando lista de Pokémons (cache miss)");
         return repository.findAll(pageable)
                 .map(this::mapToPageDTO);
     }
     
+    @Cacheable(value = "pokemonById", key = "#idLocal")
     public PokemonResponseDTO getPokemonById(Long idLocal) {
+        log.info("Buscando Pokemon por ID: {} (cache miss)", idLocal);
         Pokemon pokemon = repository.findById(idLocal)
                 .orElseThrow(() -> new PokemonNotFoundException(
                     "Pokemon não encontrado com idLocal: " + idLocal));
         return mapToResponseDTO(pokemon);
     }
     
+    @Cacheable(value = "pokemonsByType", key = "#typeName + '-' + #pageable.pageNumber + '-' + #pageable.pageSize")
     public Page<PokemonPageDTO> searchByType(String typeName, Pageable pageable) {
+        log.info("Buscando Pokémons por tipo: {} (cache miss)", typeName);
         return repository.findByTypeContaining(typeName, pageable)
                 .map(this::mapToPageDTO);
     }
     
     @Transactional
+    @CacheEvict(value = {"pokemons", "pokemonById", "pokemonsByType"}, allEntries = true)
     public PokemonResponseDTO updateFavorite(Long idLocal, FavoriteRequestDTO request) {
-        Pokemon pokemon = repository.findById(idLocal)
-                .orElseThrow(() -> new PokemonNotFoundException(
-                    "Pokemon não encontrado com idLocal: " + idLocal));
+        log.info("Atualizando favorito para Pokemon: {}", idLocal);
         
         if (request.getFavorite() != null) {
             pokemon.setFavorite(request.getFavorite());
@@ -124,5 +130,10 @@ public class PokemonService {
                 .types(pokemon.getListaDeTypes())
                 .cachedAt(pokemon.getCachedAt())
                 .build();
+    }
+
+    @CacheEvict(value = {"pokemons", "pokemonById", "pokemonsByType"}, allEntries = true)
+    public void clearAllCaches() {
+        log.info("Todos os caches foram limpos");
     }
 }
